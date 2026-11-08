@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jenter planer</title>
+<style>
+  :root {
+    --bg: #fbf6ea;
+    --surface: #ffffff;
+    --text: #2b2418;
+    --muted: #7a6c52;
+    --line: #eadfc4;
+    --accent: #d99a1c;
+    --accent-dark: #a8720a;
+    --accent-soft: #fdf0cf;
+    --head: #3b2f14;
+    --head-text: #fff6df;
+    --shadow: 0 6px 24px rgba(120, 85, 10, .12);
+    --s1-bg: #dff1e3; --s1-fg: #1f6b3a;
+    --s2-bg: #dcebfa; --s2-fg: #1d5a94;
+    --d-bg:  #fdeccb; --d-fg:  #9a5b00;
+    --n-bg:  #e6e1f5; --n-fg:  #4a3d8a;
+  }
+  :root[data-theme="dark"] { color-scheme: dark; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #1b1710; --surface: #26211604; --text: #f3ead6; --muted: #b3a483;
+      --line: #3a3322; --accent: #f0b43a; --accent-dark: #f0b43a;
+      --accent-soft: #3a2f14; --head: #120f09; --head-text: #fbe9bd;
+      --shadow: 0 6px 24px rgba(0,0,0,.4);
+      --s1-bg: #1e3a28; --s1-fg: #8fdca8;
+      --s2-bg: #1d3450; --s2-fg: #9cc9f2;
+      --d-bg:  #4a3510; --d-fg:  #f5c46b;
+      --n-bg:  #2f2a50; --n-fg:  #bdb2f0;
+    }
+    :root:not([data-theme="light"]) { --surface: #262116; }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.45;
+    min-height: 100vh;
+    padding: 32px 16px 48px;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+
+  header { text-align: center; margin-bottom: 22px; }
+  header .icon { font-size: 40px; line-height: 1; }
+  header h1 { margin: 6px 0 2px; font-size: 30px; letter-spacing: .3px; }
+  header p { margin: 0; color: var(--muted); font-size: 15px; }
+
+  .picker {
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    border-radius: 16px;
+    padding: 18px 22px;
+    box-shadow: var(--shadow);
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+    gap: 12px 18px;
+    margin-bottom: 24px;
+  }
+  .picker label { font-weight: 700; font-size: 14px; letter-spacing: .4px; text-transform: uppercase; color: var(--accent-dark); }
+  .picker input[type="date"] {
+    font: inherit; font-size: 18px; font-weight: 600;
+    padding: 9px 14px;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    background: var(--accent-soft);
+    color: var(--text);
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .picker input[type="date"]:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(217,154,28,.25); }
+
+  .card {
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    background: var(--head); color: var(--head-text);
+    text-align: left; font-size: 12.5px; letter-spacing: .8px; text-transform: uppercase;
+    padding: 14px 16px; font-weight: 700;
+  }
+  tbody td { padding: 14px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) { background: color-mix(in srgb, var(--accent-soft) 45%, transparent); }
+  tbody tr:hover { background: var(--accent-soft); }
+
+  .day {
+    display: inline-block; min-width: 64px; text-align: center;
+    background: var(--accent); color: #2b1d00;
+    font-weight: 800; border-radius: 999px; padding: 4px 12px; font-size: 14px; white-space: nowrap;
+  }
+  .date { font-weight: 700; white-space: nowrap; }
+  .date small { display: block; color: var(--muted); font-weight: 500; text-transform: lowercase; font-size: 13px; }
+  .act { font-weight: 700; }
+  .desc { color: var(--muted); }
+
+  .badge {
+    display: inline-block; min-width: 38px; text-align: center;
+    font-weight: 800; font-size: 14px; padding: 5px 12px; border-radius: 8px;
+  }
+  .b-S1 { background: var(--s1-bg); color: var(--s1-fg); }
+  .b-S2 { background: var(--s2-bg); color: var(--s2-fg); }
+  .b-D  { background: var(--d-bg);  color: var(--d-fg); }
+  .b-N  { background: var(--n-bg);  color: var(--n-fg); }
+
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 16px; }
+
+  @media (max-width: 680px) {
+    body { padding: 20px 12px 36px; }
+    header h1 { font-size: 25px; }
+    thead { display: none; }
+    table, tbody, tr, td { display: block; width: 100%; }
+    tbody tr { padding: 14px 16px; border-bottom: 1px solid var(--line); position: relative; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody td { border: none; padding: 2px 0; }
+    td.c-day { margin-bottom: 6px; }
+    td.c-job { position: absolute; top: 14px; right: 16px; width: auto; }
+    td.c-date { margin-bottom: 4px; }
+    td.c-date small { display: inline; margin-left: 6px; }
+  }
+  @media print {
+    body { background: #fff; padding: 0; }
+    .card, .picker { box-shadow: none; }
+  }
+</style>
+
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#d99a1c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Jenter planer">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-512.png">
+
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("./sw.js").catch(function (err) {
+        console.log("Service worker nije registrovan:", err);
+      });
+    });
+  }
+</script>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="icon">🐝</div>
+    <h1>Jenter planer</h1>
+    <p>Raspored aktivnosti pri odgoju matica Jenter sistemom</p>
+  </header>
+
+  <div style="text-align:center;margin:0 0 14px">
+    <button id="installBtn" hidden style="font:inherit;font-weight:700;border:0;border-radius:10px;padding:10px 18px;background:#d99a1c;color:#2b2418;box-shadow:0 3px 10px rgba(120,85,10,.18)">Instaliraj aplikaciju</button>
+  </div>
+  <div class="picker">
+    <label for="start">Unesite datum ubrizgavanja matice (0. dan):</label>
+    <input type="date" id="start" value="2026-06-08">
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr><th>Dan</th><th>Datum</th><th>Aktivnost</th><th>Opis postupka</th><th>Posao</th></tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <footer>Mijenja se samo datum ubrizgavanja – svi ostali datumi i oznake posla računaju se automatski.</footer>
+</div>
+
+<script>
+  var STEPS = [
+    { n: 0,  act: "Ubrizgavanje matice",    desc: "Zatvaranje matice u Jenter kasetu." },
+    { n: 1,  act: "Puštanje matice",        desc: "Oslobađanje matice iz kasete nakon polaganja jaja." },
+    { n: 3,  act: "Priprema odgajivačkog",  desc: "Stavljanje kloukova daske." },
+    { n: 4,  act: "Presađivanje",           desc: "Prebacivanje čašica sa larvama na letvice u odgajivač." },
+    { n: 9,  act: "Zatvaranje matičnjaka",  desc: "Pčele su završile hranjenje i zatvorile matičnjake." },
+    { n: 14, act: "Formiranje oplodnjake",  desc: "Formiranje oplodnjake i nukleusa." },
+    { n: 15, act: "Presađivanje",           desc: "Postavljanje 'viklera' radi zaštite. Stavljanje u oplodnjak." },
+    { n: 16, act: "Izleganje",              desc: "Očekivani izlazak mladih matica." },
+    { n: 25, act: "Provjera pronosa",       desc: "Kontrola da li je matica oplođena i da li nosi." }
+  ];
+  var JOBS = ["S1", "S2", "D", "N"];
+  var JOB_REF = Date.UTC(2026, 5, 4); // 04.06.2026. = početak ciklusa poslova
+  var WEEKDAYS = ["ned", "pon", "uto", "sri", "čet", "pet", "sub"];
+  var DAY_MS = 86400000;
+
+  function pad(x) { return (x < 10 ? "0" : "") + x; }
+
+  function render() {
+    var v = document.getElementById("start").value;
+    var tbody = document.getElementById("rows");
+    if (!v) { tbody.innerHTML = ""; return; }
+    var p = v.split("-");
+    var base = Date.UTC(+p[0], +p[1] - 1, +p[2]);
+    var html = "";
+    STEPS.forEach(function (s) {
+      var t = base + s.n * DAY_MS;
+      var d = new Date(t);
+      var ds = pad(d.getUTCDate()) + "." + pad(d.getUTCMonth() + 1) + "." + d.getUTCFullYear() + ".";
+      var wd = WEEKDAYS[d.getUTCDay()];
+      var idx = (((Math.round((t - JOB_REF) / DAY_MS)) % 4) + 4) % 4;
+      var job = JOBS[idx];
+      html += "<tr>" +
+        '<td class="c-day"><span class="day">' + s.n + ". dan</span></td>" +
+        '<td class="c-date date">' + ds + "<small>(" + wd + ")</small></td>" +
+        '<td class="c-act act">' + s.act + "</td>" +
+        '<td class="c-desc desc">' + s.desc + "</td>" +
+        '<td class="c-job"><span class="badge b-' + job + '">' + job + "</span></td>" +
+        "</tr>";
+    });
+    tbody.innerHTML = html;
+  }
+
+
+  var installPrompt = null;
+  var installBtn = document.getElementById("installBtn");
+  window.addEventListener("beforeinstallprompt", function (event) {
+    event.preventDefault();
+    installPrompt = event;
+    installBtn.hidden = false;
+  });
+  installBtn.addEventListener("click", async function () {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    await installPrompt.userChoice;
+    installPrompt = null;
+    installBtn.hidden = true;
+  });
+  document.getElementById("start").addEventListener("input", render);
+  render();
+</script>
+</body>
+</html>

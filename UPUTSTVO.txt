@@ -1,0 +1,19 @@
+JENTER PLANER — PWA paket
+
+SADRŽAJ
+- index.html: planer
+- manifest.webmanifest: podaci za instalaciju i ikonica
+- sw.js: offline keširanje
+- icon-192.png i icon-512.png: ikonica aplikacije
+
+VAŽNO
+Da bi Android/Chrome ponudio "Instaliraj aplikaciju", paket mora biti postavljen na HTTPS adresu
+(npr. GitHub Pages ili drugi HTTPS hosting). Samo otvaranje index.html iz memorije telefona
+(file:// ili content://) ne omogućava instalaciju PWA aplikacije.
+
+Kada je postavljen na HTTPS:
+1. Otvoriti adresu u Chromeu.
+2. Sačekati da se stranica učita.
+3. Izabrati meni ⋮ > Instaliraj aplikaciju / Dodaj na početni ekran.
+   Ako se pojavi dugme "Instaliraj aplikaciju" na stranici, može se koristiti i ono.
+4. Nakon prve posjete, planer je dostupan i bez interneta.
